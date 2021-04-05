@@ -18,8 +18,7 @@
 - 여러 개의 저기능 cpu이 하나의 고기능 cpu에 비해 효율적
 #### _신뢰성 (Reliability)_
 - CPU가 분산되어 있으므로, 하나가 고장나도 나머지가 정상 작동
-    
-* 단, 다중 프로세서는 기존의 TSS와 다른 **MULTIPROCESSOR OS**를 따로 사용하여야 한다.
+- 단, 다중 프로세서는 기존의 TSS와 다른 **MULTIPROCESSOR OS**를 따로 사용하여야 한다.
 
 ### 분산 시스템 (Distributed System) 
 * 여러 개의 컴퓨터 (CPU+Processor)를 LAN (근거리 통신) 으로 연결
