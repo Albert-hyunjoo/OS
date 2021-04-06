@@ -26,7 +26,7 @@
 
 ## 메모리 보호 (Memory Protection)
 * 사용자 프로그램이 **타 프로그램의 정보 및 메모리**를 읽고 쓰거나, **OS의 ISR를 변경**하는 경우
-* 이 경우에는 __MMU (Memory Management Unit)__를 두어서, 메모리 침범을 감시한다.
+* 이 경우에는 MMU (Memory Management Unit)를 두어서, 메모리 침범을 감시한다.
   * MMU는 프로그램 별로 **Base와 Limit**을 지정해서 소프트웨어가 **그 범위 안의 메모리만 접근 가능**하도록 강제하는 역할을 한다.
     [MMU 자세한 설명에 대해서 -- MMU의 원리와 BASE, LIMIT ](https://jhnyang.tistory.com/247)
 * MMU의 설정 및 적용은 **특권 명령 (Previlege)** 으로 적용되며, OS만 이를 설정할 수 있다.
