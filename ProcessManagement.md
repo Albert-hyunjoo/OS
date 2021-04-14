@@ -29,7 +29,7 @@
 * `I/O` 요청이나 `Main Memory` 프로세스 요청 등은 모두 `스케쥴러` 의해 순서가 정해진다.
 * `queue`에는 3가지 종류가 존재한다.
     * `Job Queue` -- **JOB 스케쥴러**
-        * `long-term schedule`로 **어떤 프로세스를 실행**할지 신중하게 수행한다.
+        * `long-term schedule`로 HDD에서 **어떤 프로세스를 메모리로 올릴**지 신중하게 수행한다.
         * 여기서 쓰인 `Long-term scheduler`는 `하드 디스크`에서 `메모리`로 프로레스 `load`
             * *다중 프로그래밍의 수준 (degree) 를 제어한다*
             * `new` 상태를 `ready`로 전환한다.
