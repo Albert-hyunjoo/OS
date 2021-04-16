@@ -13,7 +13,7 @@
 |P4|3|1|0|
 |**Average Waiting Time**|*7m/sec* `(0+3+9+16)/4`
 
-### Shortest-Remaining-Time-First (SRTF) -- Preemptive
+## Shortest-Remaining-Time-First (SRTF) -- Preemptive
 * `SJF`의 침습 형식으로, 잔여 시간을 계산해서 `가장 짧은 잔여 시간`부터 스타트
 * 중간에 실행 중인 프로세스를 방해하고 난입할 수 있다.
 
