@@ -61,6 +61,7 @@ void release() {
 |x|`sem.acquire()`|
 |S1;|S2;|
 |`sem.release()`|x|
+
 (목적은 S1를 무조건 우선적으로 실행하도록 하는 것)
 > (*sem.value = 0으로 가정한다.*)
 > 1) **S1**이 자연스럽게 실행된다
