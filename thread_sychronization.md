@@ -20,7 +20,7 @@
 ```java
 class Semaphore {
         int value; ## 정수형
-           Samaphore (int value) {
+           Semaphore (int value) {
            ...
            }
            void acquire() { ## Proberen (test) 
