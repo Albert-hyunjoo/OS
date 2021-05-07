@@ -88,6 +88,7 @@ class Test {
     }
 }
 ```
+### 임계구역 해결을 위해 코드를 추가
 ```java
 void insert (int item) { # 특정 아이템을 insert하는 기능
     while (count == size) { # 꽉 찰때까지
@@ -110,9 +111,9 @@ void remove() { # 특정 out 위치의 item을 제거
         int item = buf[out]; # buf stack에서 out위치의 item을 지정
         out = (out + 1) % size; # 순회
         count --; # 카운트 하나씩 감소
-        return item; # 아이템을 return
         ########## critical area ############
-        mutex.release()
+        mutex.release();
+        return item; # 아이템을 return
         } catch (InterruptedException e) {}
         return -1; # 예외인 경우
 ```
@@ -136,3 +137,68 @@ Buffer (int size) {
     mutex = new Semaphore(1); # 초깃값 1로 설정
 }
 ```
+### Busy-wait 문제를 해결
+* 기존의 **mutex 싱글 세마포어**와 **무한 루프**는 `임계구역` 문제를 해결할 수 있다.
+* 하지만 계속 무한 루프를 도는 과정에서 **심각한 속도의 손실** 발생 (활동을 하지 않음에도 계속 작동)
+* 새로운 세마포어인 `full`, `empty`를 추가해서 다음과 같은 알고리즘으로 이를 최소화
+> 1) 처음은 아무것도 없으므로 크기가 size인 버퍼를 준비한다.
+> 2) `empty (초깃값은 size -- 몇개가 비었나?).acquire()`를 실행해서 생산자만 critical area로
+> 3) 생산자는 produce를 실시하고 나오면서 `full (초깃값 0 -- 얼만큼 찼나?).release()`로 wakeup
+> 4) 소비자는 `full.acquire()`를 통해 임계 구역으로 진입 후 소비를 하고 empty.release()로 생산자 깨움
+```java
+# 추가적으로 semaphore를 import해야 함!
+# Buffer 클래스에 full, empty를 추가하는 걸로
+
+import java.util.concurrent.Semaphore;
+
+class Buffer { # Buffer 클래스를 생성
+    int[] buf; # 여기서는 stack으로
+    int size; # size 변수
+    int count;
+    int in;
+    int out;
+    Semaphore mutex, full, empty; # Semaphore가 추가
+}
+
+Buffer (int size) {
+    buf = new int[size];
+    this.size = size;
+    count = in = out = 0;
+    mutex = new Semaphore(1); # 초깃값 1로 설정
+    full = new Semaphore(0); # full의 초깃값은 0
+    empty = new Semaphore(size); # empty의 초깃값은 size
+}
+```
+```java
+void insert (int item) { # 특정 아이템을 insert하는 기능
+        try {
+            empty.acquire();
+            mutex.acquire();
+        ######## critical area ##########
+            buf[in] = item; # buf라는 stack의 in의 index에 item 삽입
+            in = (in+1) % size # (in+1) % size로 순회하면서 들르기
+            count ++; # 안의 개수는 늘어남
+        ######## critical area ##########
+            mutex.release();
+            full.release(); # 여기서 remove를 자극
+        } catch (InterrruptedException e) {}
+}
+
+void remove() { # 특정 out 위치의 item을 제거
+        try {
+            full.acquire()
+            mutex.acquire()
+        ########## critical area ############
+            int item = buf[out]; # buf stack에서 out위치의 item을 지정
+            out = (out + 1) % size; # 순회
+            count--; # 카운트 하나씩 감소
+        ########## critical area ############
+            mutex.release();
+            empty.release();
+            return item; # 아이템을 return
+        } catch (InterruptedException e) {}
+        return -1; # 예외인 경우
+}
+```
+
+
