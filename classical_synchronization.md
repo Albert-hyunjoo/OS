@@ -141,10 +141,10 @@ Buffer (int size) {
 * 기존의 **mutex 싱글 세마포어**와 **무한 루프**는 `임계구역` 문제를 해결할 수 있다.
 * 하지만 계속 무한 루프를 도는 과정에서 **심각한 속도의 손실** 발생 (활동을 하지 않음에도 계속 작동)
 * 새로운 세마포어인 `full`, `empty`를 추가해서 다음과 같은 알고리즘으로 이를 최소화
-> 1) 처음은 아무것도 없으므로 크기가 size인 버퍼를 준비한다.
+> 1) 처음은 아무것도 없으므로 크기가 `size`인 버퍼를 준비한다.
 > 2) `empty (초깃값은 size -- 몇개가 비었나?).acquire()`를 실행해서 생산자만 critical area로
-> 3) 생산자는 produce를 실시하고 나오면서 `full (초깃값 0 -- 얼만큼 찼나?).release()`로 wakeup
-> 4) 소비자는 `full.acquire()`를 통해 임계 구역으로 진입 후 소비를 하고 empty.release()로 생산자 깨움
+> 3) 생산자는 `produce`를 실시하고 나오면서 `full (초깃값 0 -- 얼만큼 찼나?).release()`로 `wakeup`
+> 4) 소비자는 `full.acquire()`를 통해 임계 구역으로 진입 후 소비를 하고 `empty.release()`로 생산자 깨움
 ```java
 # 추가적으로 semaphore를 import해야 함!
 # Buffer 클래스에 full, empty를 추가하는 걸로
