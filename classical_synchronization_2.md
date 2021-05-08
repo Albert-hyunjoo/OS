@@ -43,7 +43,59 @@ do {
     wait(mutex) # read_count-1 위해 다시 lock
     read_count --;
     if (read_count == 0) { # reader가 없으면
-        signal(rw_mutex); # writer에 reader가 없다고 알림
+        signal(rw_mutex);  # writer에 reader가 없다고 알림
+    }
     signal(mutex); # lock을 반환한다
+}
 ```
+## 식사하는 철학자 문제 (Dining Philosopher)
+* 5명의 철학자가 원탁에서 밥을 먹거나 생각을 하는 경우만 고려한다.
+* 식사를 하기 위해서는 2개의 젓가락이 필요하며, 젓가락 한 개씩 철학자 사이에 있다.
+* 문제는 양쪽의 철학자가 동시에 한 젓가락을 잡으면 영원히 식사를 할 수 없다는 점이다 (데드락)
 
+### 데드락이란?
+* 프로세스는 실행을 위해서 **여러 자원**을 필요로 한다 (프로세스가 CPU 점유 등)
+* 문제는 **2+ 개**의 프로세스가 **하나의 자원**을 얻기 위해 **서로가 무한히 대기**를 하는 경우
+> 데드락이 일어나는 **4가지 필요조건**은 다음과 같다 :    
+> _하지만 이 4가지가 충족된다고 반드시 데드락이 일어나는 건 아니다._    
+> 1) Mutual Exclusion (상호배타)    
+> 2) Hold and Wait (보유 및 대기)    
+> 3) No Preemption (비선점)
+> 4) Circular Wait (환형대기)
+* 어떤 자원이 어떤 프로세스에 할당되었는지는 `자원 할당도`로 확인할 수 있다.
+* `자원 할당도` 상에서 원이 만들어지면 (**환형대기**) **교착상태의 필요조건**으로 짐작할 수 있다.
+
+### 식사하는 철학자 문제 코드 예시
+```java
+import java.util.concurrent.Semaphore;
+
+class Philosopher extends Thread {
+      int id;
+      Semaphore lstick, rstick;
+  
+      Philosopher (int id, Semaphore lstick, Semaphore rstick) {
+          this.id = id;
+          this.lstick = lstick;
+          this.rstick = rstick;
+}
+
+public void run() { # 여기서 변경한다
+    try {
+    while (true) {
+        # 만약 철학자의 id가 짝수면 lstick, rstick 순으로
+        # id가 홀수면 lstick, rstick
+        if (id % 2 == 0) {
+            lstick.acquire();
+            rstick.acquire();
+        }
+        else { 
+            rstick.acquire();
+            lstick.acquire();
+        }
+        eating();
+        lstick.release();
+        rstick.release();
+        thinking();
+    } catch (InterruptedException e) {}
+}
+```
